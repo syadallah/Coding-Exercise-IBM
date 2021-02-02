@@ -1,8 +1,9 @@
 import React from 'react'
+import PokemonCard from './PokemonCard'
 
 const App = () => (
   <div className="App">
-    <h1> Pokemon </h1>
+    <PokemonCard />
   </div>
 )
 
