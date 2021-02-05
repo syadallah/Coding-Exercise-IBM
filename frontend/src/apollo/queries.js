@@ -7,6 +7,7 @@ query ($search: String!, $type: String!){
         limit
         offset
         edges {
+            id
             name
             types
             isFavorite
@@ -22,6 +23,7 @@ query ($search: String!, $type: String!){
       limit
       offset
       edges {
+          id
           name
           types
           isFavorite
