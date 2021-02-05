@@ -15,6 +15,21 @@ query ($search: String!, $type: String!){
     }
 }`;
 
+export const GET_FAVORITE_POKEMONS = gql`
+query ($search: String!, $type: String!){
+  pokemons (query: { search: $search, filter: { type: $type, isFavorite: true }, limit: 1000}) {
+      count
+      limit
+      offset
+      edges {
+          name
+          types
+          isFavorite
+          image
+      }
+  }
+}`;
+
 export const POKEMON_TYPES = gql`
 {
     pokemonTypes

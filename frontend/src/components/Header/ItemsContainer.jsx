@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useQuery } from "@apollo/client";
-import { GET_POKEMONS, POKEMON_TYPES } from "../../apollo/queries";
+import React, { useState, useEffect } from "react";
+import { useQuery, useLazyQuery } from "@apollo/client";
+import { GET_POKEMONS, POKEMON_TYPES, GET_FAVORITE_POKEMONS } from "../../apollo/queries";
 import {
   Tabs,
   Tab,
@@ -11,6 +11,8 @@ import {
   FormControl,
   InputLabel,
   IconButton,
+  // Backdrop,
+  // CircularProgress,
 } from "@material-ui/core";
 import ListIcon from "@material-ui/icons/List";
 import ViewModuleIcon from "@material-ui/icons/ViewModule";
@@ -40,19 +42,32 @@ const useStyles = makeStyles((theme) => ({
   fields: {
     display: "flex",
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+  },
 }));
 
 const ItemsContainer = () => {
   const classes = useStyles();
-  const [filter, setFilter] = useState("");
+  const [search, setSearch] = useState("");
   const [type, setType] = useState("");
   const [showAll, setShowAll] = useState(true);
   const [viewType, setViewType] = useState("grid");
 
-  const { loading: loadingPokemons, data } = useQuery(GET_POKEMONS, {
-    variables: { search: "", type: "" },
-  });
-  const { loading: loadingTypes, data: types } = useQuery(POKEMON_TYPES);
+  const getQueryOptions = () => {
+    let variables = {
+      search,
+      type,
+    };
+    return { variables };
+  };
+
+  const [getPokemons, { data }] = useLazyQuery(
+    showAll ? GET_POKEMONS : GET_FAVORITE_POKEMONS,
+    getQueryOptions()
+  );
+  const { data: types } = useQuery(POKEMON_TYPES);
 
   const handleTabChange = (_, newValue) => {
     setShowAll(!newValue);
@@ -62,7 +77,10 @@ const ItemsContainer = () => {
     setType(ev.target.value);
   };
 
-  if (loadingPokemons || loadingTypes) return null;
+  useEffect(() => {
+    getPokemons(getQueryOptions());
+  }, [search, type, showAll]);
+
   return (
     <div className={classes.root}>
       <Tabs
@@ -84,11 +102,19 @@ const ItemsContainer = () => {
           label="Search"
           className={classes.inputField}
           variant="filled"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+          focused={true}
         />
         <FormControl variant="filled" className={classes.dropdown}>
           <InputLabel>Type</InputLabel>
           <Select value={type} onChange={handleTypeChange}>
-            {types.pokemonTypes.map((t) => (
+            <MenuItem value="">
+              <em>All</em>
+            </MenuItem>
+            {types && types.pokemonTypes.map((t) => (
               <MenuItem key={t} value={t}>
                 {t}
               </MenuItem>
@@ -116,11 +142,8 @@ const ItemsContainer = () => {
           </IconButton>
         </span>
       </div>
-      <h2>Pokemons:</h2>
       <ul>
-        {data.pokemons.edges.map((e) => (
-          <li key={e.name}>{e.name}</li>
-        ))}
+        {data && data.pokemons.edges.map((e) => <li key={e.name}>{e.name}</li>)}
       </ul>
     </div>
   );
