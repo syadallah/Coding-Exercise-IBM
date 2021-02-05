@@ -1,12 +1,14 @@
 import React from 'react'
-
 import ItemsContainer from './Header/ItemsContainer'
-import PokemonCard from './PokemonCard'
+import { Route, Switch } from 'react-router-dom'
+import PokemonDetails from './PokemonDetails'
 
 const App = () => (
-  <div className="App">
-    <ItemsContainer />
-    <PokemonCard />
+  <div>
+    <Switch>
+      <Route path="/" exact component={ItemsContainer} />
+      <Route path="/:name" component={PokemonDetails} />
+    </Switch>
   </div>
 )
 
