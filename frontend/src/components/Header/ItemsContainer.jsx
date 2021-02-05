@@ -10,7 +10,10 @@ import {
   Select,
   FormControl,
   InputLabel,
+  IconButton,
 } from "@material-ui/core";
+import ListIcon from "@material-ui/icons/List";
+import ViewModuleIcon from "@material-ui/icons/ViewModule";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,11 +28,14 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#71c1a1",
     color: "#fff",
   },
-  flexItem: {
+  viewButtons: {
     flex: 1,
   },
+  dropdown: {
+    flex: 4,
+  },
   inputField: {
-    flex: 2,
+    flex: 8,
   },
   fields: {
     display: "flex",
@@ -54,7 +60,7 @@ const ItemsContainer = () => {
 
   const handleTypeChange = (ev) => {
     setType(ev.target.value);
-  }
+  };
 
   if (loadingPokemons || loadingTypes) return null;
   return (
@@ -79,7 +85,7 @@ const ItemsContainer = () => {
           className={classes.inputField}
           variant="filled"
         />
-        <FormControl variant="filled" className={classes.flexItem}>
+        <FormControl variant="filled" className={classes.dropdown}>
           <InputLabel>Type</InputLabel>
           <Select value={type} onChange={handleTypeChange}>
             {types.pokemonTypes.map((t) => (
@@ -89,8 +95,28 @@ const ItemsContainer = () => {
             ))}
           </Select>
         </FormControl>
+        <span className={classes.viewButtons}>
+          <IconButton
+            color="primary"
+            component="span"
+            onClick={() => {
+              setViewType("list");
+            }}
+          >
+            <ListIcon />
+          </IconButton>
+          <IconButton
+            color="primary"
+            component="span"
+            onClick={() => {
+              setViewType("grid");
+            }}
+          >
+            <ViewModuleIcon />
+          </IconButton>
+        </span>
       </div>
-      <h2>All pokemons:</h2>
+      <h2>Pokemons:</h2>
       <ul>
         {data.pokemons.edges.map((e) => (
           <li key={e.name}>{e.name}</li>
