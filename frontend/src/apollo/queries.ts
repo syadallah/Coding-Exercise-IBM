@@ -19,3 +19,20 @@ export const POKEMON_TYPES = gql`
 {
     pokemonTypes
 }`;
+
+export const POKEMON_BY_ID = gql`
+{
+    pokemonByName(name: $name) {
+    name,
+    image,
+    weight {
+      minimum
+      maximum
+    }
+    height {
+      minimum
+      maximum
+    }
+  }
+}
+`;
