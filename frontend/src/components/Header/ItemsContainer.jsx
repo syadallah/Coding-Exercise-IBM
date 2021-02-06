@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
   viewButtons: {
     flex: 1,
-    minWidth: 100
+    minWidth: 100,
   },
   dropdown: {
     flex: 4,
@@ -213,12 +213,22 @@ const ItemsContainer = () => {
               <>
                 <ListItem key={p.id}>
                   <ListItemAvatar>
-                    <Avatar src={p.image} alt={p.name} />
+                    <Avatar
+                      src={p.image}
+                      alt={p.name}
+                      component={Link}
+                      to={p.name}
+                    />
                   </ListItemAvatar>
-                  <ListItemText
-                    primary={p.name}
-                    secondary={p.types.join(", ")}
-                  />
+                  <Link
+                    to={`/${p.name}`}
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    <ListItemText
+                      primary={p.name}
+                      secondary={p.types.join(", ")}
+                    />
+                  </Link>
                   <ListItemSecondaryAction>
                     <IconButton
                       edge="end"

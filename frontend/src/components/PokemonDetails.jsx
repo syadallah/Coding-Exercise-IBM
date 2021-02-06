@@ -14,10 +14,10 @@ import {
   Divider,
 	Grid,
 	CardActionArea,
-	Link,
 	CardMedia,
 } from "@material-ui/core";
 import { red } from "@material-ui/core/colors";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
