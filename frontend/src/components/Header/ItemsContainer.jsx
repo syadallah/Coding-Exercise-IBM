@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import {
   GET_POKEMONS,
   POKEMON_TYPES,
@@ -36,6 +36,11 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import ViewModuleIcon from "@material-ui/icons/ViewModule";
 import { red } from "@material-ui/core/colors";
+import {
+  ADD_TO_FAVORITES,
+  REMOVE_FROM_FAVORITES,
+} from "../../apollo/mutations";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
   viewButtons: {
     flex: 1,
+    minWidth: 100
   },
   dropdown: {
     flex: 4,
@@ -96,6 +102,8 @@ const ItemsContainer = () => {
   const [type, setType] = useState("");
   const [showAll, setShowAll] = useState(true);
   const [viewType, setViewType] = useState("grid");
+  const [addToFavorites] = useMutation(ADD_TO_FAVORITES);
+  const [removeFromFavorites] = useMutation(REMOVE_FROM_FAVORITES);
 
   const getQueryOptions = () => {
     let variables = {
@@ -117,6 +125,15 @@ const ItemsContainer = () => {
 
   const handleTypeChange = (ev) => {
     setType(ev.target.value);
+  };
+
+  const handleFavorite = (id, isFavorite) => {
+    if (isFavorite) {
+      removeFromFavorites({ variables: { id } });
+    } else {
+      addToFavorites({ variables: { id } });
+    }
+    getPokemons(getQueryOptions());
   };
 
   useEffect(() => {
@@ -207,6 +224,9 @@ const ItemsContainer = () => {
                       edge="end"
                       aria-label="favorite"
                       className={classes.favoriteBtn}
+                      onClick={() => {
+                        handleFavorite(p.id, p.isFavorite);
+                      }}
                     >
                       {p.isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                     </IconButton>
@@ -223,26 +243,36 @@ const ItemsContainer = () => {
               <Grid key={p.name} item>
                 <Card className={classes.paper}>
                   <CardActionArea className={classes.imageContainer}>
-                    <CardMedia
-                      component="img"
-                      image={p.image}
-                      title={p.name}
-                      classes={{ media: classes.image }}
-                    />
+                    <Link
+                      to={`/${p.name}`}
+                      style={{ color: "inherit", textDecoration: "none" }}
+                    >
+                      <CardMedia
+                        component="img"
+                        image={p.image}
+                        title={p.name}
+                        classes={{ media: classes.image }}
+                      />
+                    </Link>
                   </CardActionArea>
                   <CardActions className={classes.cardActions}>
-                    <span>
+                    <Link
+                      to={`/${p.name}`}
+                      style={{ color: "inherit", textDecoration: "none" }}
+                    >
                       <Typography className={classes.nameHeading}>
                         {p.name}
                       </Typography>
                       <Typography variant="subtitle2">
                         {p.types.join(", ")}
                       </Typography>
-                    </span>
+                    </Link>
                     <IconButton
                       aria-label="add to favorites"
                       className={classes.favoriteBtn}
-                      onClick={() => {}}
+                      onClick={() => {
+                        handleFavorite(p.id, p.isFavorite);
+                      }}
                     >
                       {p.isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                     </IconButton>

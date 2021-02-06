@@ -40,9 +40,11 @@ export const POKEMON_TYPES = gql`
 export const POKEMON_BY_NAME = gql`
 query ($name: String!){
   pokemonByName(name: $name) {
+    id
     name
     image
     sound
+    types
     isFavorite
     maxCP
     maxHP
@@ -55,6 +57,7 @@ query ($name: String!){
       maximum
     }
     evolutions {
+      id
       name
       image
       isFavorite
