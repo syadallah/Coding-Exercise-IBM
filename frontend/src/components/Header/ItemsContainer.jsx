@@ -21,8 +21,6 @@ import {
   CardMedia,
   CardActions,
   Typography,
-  Backdrop,
-  CircularProgress,
   List,
   Avatar,
   ListItemAvatar,
@@ -62,6 +60,8 @@ const useStyles = makeStyles((theme) => ({
   },
   dropdown: {
     flex: 4,
+    marginLeft: 10,
+    marginRight: 10
   },
   inputField: {
     flex: 8,
@@ -118,11 +118,11 @@ const ItemsContainer = () => {
     },
   });
 
-  const [getPokemons, { loading: loadingData, data }] = useLazyQuery(
+  const [getPokemons, { data }] = useLazyQuery(
     showAll ? GET_POKEMONS : GET_FAVORITE_POKEMONS,
     getQueryOptions()
   );
-  const { loading: loadingType, data: types } = useQuery(POKEMON_TYPES);
+  const { data: types } = useQuery(POKEMON_TYPES);
 
   const handleTabChange = (_, newValue) => {
     setShowAll(!newValue);
@@ -158,9 +158,6 @@ const ItemsContainer = () => {
   console.log("data", data);
   return (
     <div className={classes.root}>
-      {/* <Backdrop className={classes.backdrop} open={loadingType || loadingData}>
-        <CircularProgress color="inherit" />
-      </Backdrop> */}
       <Tabs
         value={Number(!showAll)}
         onChange={handleTabChange}
