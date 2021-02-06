@@ -59,3 +59,31 @@ $ npm start
 - If you access the `/graphql` endpoint in the browser, you'll be presented with a GraphQL Playground that allows you to run Queries and Mutations as well as view the GraphQL Schema.
 - There is no need to configure a build, the development env. is sufficient.
 - **Tests** are important and if time allows it, we'd like to see *some* test coverage.
+
+## Here is guideline how to run this project 
+#### Run the server
+```
+$ cd backend
+$ npm i //for installing dependency 
+$ npm install
+$ npm start
+```
+
+#### Run the frontend
+```
+$ cd frontend
+$ npm i //for installing dependency 
+$ npm install
+$ npm start
+```
+About Technolgy Which I use throught  out the project
+
+##GraphQL 
+GraphQL follows the same set of constraints as REST APIs, but it organizes data into a graph using one interface. Each object is then backed by a resolver that accesses the server's data.
+
+I host my backend on this port:
+http://localhost:4000/graphql
+
+##MATERIAL-UI
+ Material-UI components to display a list of pokemon to the user. The application consists of a different button on top which contains the favourite pokemon if user select any pokemon as favourite , a text field which can be used to initiate a full text search for pokemon and a grid and list view which contains the pokeman results.
+
