@@ -30,6 +30,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Divider,
+  TablePagination,
 } from "@material-ui/core";
 import ListIcon from "@material-ui/icons/List";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -98,20 +99,24 @@ const useStyles = makeStyles((theme) => ({
 
 const ItemsContainer = () => {
   const classes = useStyles();
+  const itemsPerPage = 10;
   const [search, setSearch] = useState("");
   const [type, setType] = useState("");
   const [showAll, setShowAll] = useState(true);
   const [viewType, setViewType] = useState("grid");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [addToFavorites] = useMutation(ADD_TO_FAVORITES);
   const [removeFromFavorites] = useMutation(REMOVE_FROM_FAVORITES);
 
-  const getQueryOptions = () => {
-    let variables = {
+  const getQueryOptions = () => ({
+    variables: {
       search,
       type,
-    };
-    return { variables };
-  };
+      limit: itemsPerPage,
+      offset: page * itemsPerPage
+    },
+  });
 
   const [getPokemons, { loading: loadingData, data }] = useLazyQuery(
     showAll ? GET_POKEMONS : GET_FAVORITE_POKEMONS,
@@ -121,6 +126,7 @@ const ItemsContainer = () => {
 
   const handleTabChange = (_, newValue) => {
     setShowAll(!newValue);
+    setPage(0);
   };
 
   const handleTypeChange = (ev) => {
@@ -136,16 +142,25 @@ const ItemsContainer = () => {
     getPokemons(getQueryOptions());
   };
 
+  const handleChangePage = (_event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   useEffect(() => {
     getPokemons(getQueryOptions());
-  }, [search, type, showAll]);
+  }, [search, type, showAll, page, rowsPerPage]);
 
   console.log("data", data);
   return (
     <div className={classes.root}>
-      <Backdrop className={classes.backdrop} open={loadingType || loadingData}>
+      {/* <Backdrop className={classes.backdrop} open={loadingType || loadingData}>
         <CircularProgress color="inherit" />
-      </Backdrop>
+      </Backdrop> */}
       <Tabs
         value={Number(!showAll)}
         onChange={handleTabChange}
@@ -292,6 +307,14 @@ const ItemsContainer = () => {
             ))}
         </Grid>
       )}
+      <TablePagination
+        component="div"
+        count={data ? data.pokemons.count : 0}
+        page={data ? page : 0}
+        onChangePage={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
     </div>
   );
 };

@@ -1,34 +1,34 @@
 import { gql } from '@apollo/client'
 
 export const GET_POKEMONS = gql`
-query ($search: String!, $type: String!){
-    pokemons (query: { search: $search, filter: { type: $type }, limit: 1000}) {
-        count
-        limit
-        offset
-        edges {
-            id
-            name
-            types
-            isFavorite
-            image
-        }
+query ($search: String!, $type: String!, $limit: Int!, $offset: Int!){
+  pokemons (query: { search: $search, filter: { type: $type }, limit: $limit, offset: $offset}) {
+    count
+    limit
+    offset
+    edges {
+      id
+      name
+      types
+      isFavorite
+      image
     }
+  }
 }`;
 
 export const GET_FAVORITE_POKEMONS = gql`
-query ($search: String!, $type: String!){
-  pokemons (query: { search: $search, filter: { type: $type, isFavorite: true }, limit: 1000}) {
-      count
-      limit
-      offset
-      edges {
-          id
-          name
-          types
-          isFavorite
-          image
-      }
+query ($search: String!, $type: String!, $limit: Int!, $offset: Int!){
+  pokemons (query: { search: $search, filter: { type: $type, isFavorite: true }, limit: $limit, offset: $offset}) {
+    count
+    limit
+    offset
+    edges {
+      id
+      name
+      types
+      isFavorite
+      image
+    }
   }
 }`;
 
