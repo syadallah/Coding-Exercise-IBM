@@ -1,5 +1,5 @@
 import React from 'react'
-import ItemsContainer from './Header/ItemsContainer'
+import ItemsContainer from './PokemonsContainer'
 import { Route, Switch } from 'react-router-dom'
 import PokemonDetails from './PokemonDetails'
 

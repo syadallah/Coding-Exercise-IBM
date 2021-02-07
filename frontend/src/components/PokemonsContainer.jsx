@@ -4,7 +4,7 @@ import {
   GET_POKEMONS,
   POKEMON_TYPES,
   GET_FAVORITE_POKEMONS,
-} from "../../apollo/queries";
+} from "../apollo/queries";
 import {
   Tabs,
   Tab,
@@ -38,7 +38,7 @@ import { red } from "@material-ui/core/colors";
 import {
   ADD_TO_FAVORITES,
   REMOVE_FROM_FAVORITES,
-} from "../../apollo/mutations";
+} from "../apollo/mutations";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   dropdown: {
     flex: 4,
     marginLeft: 10,
-    marginRight: 10
+    marginRight: 10,
   },
   inputField: {
     flex: 8,
@@ -99,25 +99,29 @@ const useStyles = makeStyles((theme) => ({
 
 const ItemsContainer = () => {
   const classes = useStyles();
-  const itemsPerPage = 10;
   const [search, setSearch] = useState("");
   const [type, setType] = useState("");
   const [showAll, setShowAll] = useState(true);
   const [viewType, setViewType] = useState("grid");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [addToFavorites] = useMutation(ADD_TO_FAVORITES);
-  const [removeFromFavorites] = useMutation(REMOVE_FROM_FAVORITES);
 
   const getQueryOptions = () => ({
     variables: {
       search,
       type,
-      limit: itemsPerPage,
-      offset: page * itemsPerPage
+      limit: rowsPerPage,
+      offset: page * rowsPerPage,
     },
   });
 
+  
+  const [addToFavorites] = useMutation(ADD_TO_FAVORITES, {
+    refetchQueries: [{ query: showAll ? GET_POKEMONS : GET_FAVORITE_POKEMONS, ...getQueryOptions() }],
+  });
+  const [removeFromFavorites] = useMutation(REMOVE_FROM_FAVORITES, {
+    refetchQueries: [{ query: GET_FAVORITE_POKEMONS, ...getQueryOptions() }],
+  });
   const [getPokemons, { data }] = useLazyQuery(
     showAll ? GET_POKEMONS : GET_FAVORITE_POKEMONS,
     getQueryOptions()
@@ -139,7 +143,6 @@ const ItemsContainer = () => {
     } else {
       addToFavorites({ variables: { id } });
     }
-    getPokemons(getQueryOptions());
   };
 
   const handleChangePage = (_event, newPage) => {
@@ -147,6 +150,7 @@ const ItemsContainer = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
+    debugger;
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
